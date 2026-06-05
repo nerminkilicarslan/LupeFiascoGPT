@@ -19,23 +19,19 @@ def ensure_model():
 PRESETS = [
     "I used to",
     "The city never sleeps",
-    "Streets of Chicago",
-    "They say the pen is",
     "Food and Liquor",
-    "I'm from the",
     "Never",
-    "The cool kids",
 ]
 
 # ---------- Core function ----------
-def generate(prompt, temperature, max_tokens, top_k):
+def generate(prompt, max_tokens):
     if not ensure_model():
         return (
-            "Model henuz egitilmemis.\n\n"
-            "Once su adimlari calistir:\n"
+            "Model not trained yet.\n\n"
+            "Run the following steps first:\n"
             "  1. python collect_lyrics.py\n"
             "  2. python train.py\n\n"
-            "Egitim bittikten sonra bu sayfayi yenile."
+            "Refresh this page after training completes."
         )
     if not prompt or not prompt.strip():
         prompt = "I"
@@ -43,8 +39,8 @@ def generate(prompt, temperature, max_tokens, top_k):
         model, stoi, itos,
         prompt=prompt.strip(),
         max_tokens=int(max_tokens),
-        temperature=float(temperature),
-        top_k=int(top_k),
+        temperature=0.8,
+        top_k=50,
     )
 
 # ---------- Custom CSS ----------
@@ -61,9 +57,9 @@ body, .gradio-container {
 /* ── Header banner ── */
 #lupe-header {
     text-align: center;
-    padding: 2.4rem 1rem 1.6rem;
+    padding: 1.2rem 1rem 1rem;
     border-bottom: 1px solid #2a2a2a;
-    margin-bottom: 1.8rem;
+    margin-bottom: 1.2rem;
     background: #0a0a0a;
 }
 #lupe-header .mic-icon {
@@ -230,25 +226,20 @@ with gr.Blocks(css=CSS, title="Lupe Fiasco GPT") as demo:
                 "text-transform:uppercase;margin:8px 0 4px;'>Quick starters</p>"
             )
             with gr.Row():
-                for p in PRESETS[:4]:
+                for p in PRESETS[:2]:
                     btn = gr.Button(p, elem_classes="preset-btn")
                     btn.click(fn=lambda x=p: x, inputs=None, outputs=prompt_input)
             with gr.Row():
-                for p in PRESETS[4:]:
+                for p in PRESETS[2:]:
                     btn = gr.Button(p, elem_classes="preset-btn")
                     btn.click(fn=lambda x=p: x, inputs=None, outputs=prompt_input)
 
-            temperature = gr.Slider(
-                minimum=0.4, maximum=1.5, value=0.8, step=0.05,
-                label="Creativity  (temperature)",
-            )
-            max_tokens = gr.Slider(
-                minimum=80, maximum=600, value=300, step=20,
-                label="Length  (tokens)",
-            )
-            top_k = gr.Slider(
-                minimum=10, maximum=100, value=50, step=5,
-                label="Boldness  (top-k)",
+            max_tokens = gr.Number(
+                value=300,
+                label="Length  (characters)",
+                precision=0,
+                minimum=80,
+                maximum=1200,
             )
 
             gen_btn = gr.Button("GENERATE", elem_id="gen-btn")
@@ -265,12 +256,12 @@ with gr.Blocks(css=CSS, title="Lupe Fiasco GPT") as demo:
     # Wiring
     gen_btn.click(
         fn=generate,
-        inputs=[prompt_input, temperature, max_tokens, top_k],
+        inputs=[prompt_input, max_tokens],
         outputs=output_box,
     )
     prompt_input.submit(
         fn=generate,
-        inputs=[prompt_input, temperature, max_tokens, top_k],
+        inputs=[prompt_input, max_tokens],
         outputs=output_box,
     )
 

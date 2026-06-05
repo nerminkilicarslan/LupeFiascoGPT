@@ -69,7 +69,14 @@ print(f"Model parametreleri: {total_params:.2f}M\n")
 optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
 os.makedirs("checkpoints", exist_ok=True)
 
-for step in range(max_iters):
+start_iter = 0
+if os.path.exists("checkpoints/model.pt"):
+    ckpt = torch.load("checkpoints/model.pt", map_location=device, weights_only=False)
+    model.load_state_dict(ckpt['model_state_dict'])
+    start_iter = ckpt.get('step', 0)
+    print(f"Checkpoint yuklendi, adim {start_iter}'den devam ediliyor...\n")
+
+for step in range(start_iter, max_iters):
     if step % eval_interval == 0 or step == max_iters - 1:
         losses = estimate_loss()
         print(f"step {step:5d} | train loss {losses['train']:.4f} | val loss {losses['val']:.4f}")
@@ -82,6 +89,7 @@ for step in range(max_iters):
             'n_embd':     n_embd,
             'n_head':     n_head,
             'n_layer':    n_layer,
+            'step':       step,
         }, "checkpoints/model.pt")
 
     xb, yb = get_batch('train')
