@@ -283,4 +283,4 @@ with gr.Blocks(css=CSS, title="Lupe Fiasco GPT") as demo:
     """)
 
 if __name__ == "__main__":
-    demo.launch(server_name="0.0.0.0", server_port=7860, show_error=True)
+    demo.launch(server_name="0.0.0.0", server_port=7860, show_error=True, inbrowser=True)
