@@ -1,0 +1,6 @@
+checkpoints/
+lupe_dataset.txt
+__pycache__/
+*.pyc
+.env
+.DS_Store
