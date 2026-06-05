@@ -76,7 +76,6 @@ body, .gradio-container {
     font-size: 2rem;
     font-weight: 900;
     letter-spacing: 0.18em;
-    text-transform: uppercase;
     color: #ffffff;
     margin: 0 0 0.3rem;
 }
@@ -207,7 +206,7 @@ with gr.Blocks(css=CSS, title="Lupe Fiasco GPT") as demo:
     gr.HTML("""
     <div id="lupe-header">
         <span class="mic-icon">🎤</span>
-        <h1>Lupe Fiasco GPT</h1>
+        <h1>LUPE FIASCO GPT</h1>
         <p class="sub">Character-level language model · trained on rap lyrics</p>
         <p class="albums">
             Food &amp; Liquor &nbsp;·&nbsp; The Cool &nbsp;·&nbsp; Lasers &nbsp;·&nbsp;
